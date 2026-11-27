@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real-Time ASL Transcription Engine | Fatima Alharake</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Back Navigation Link */
+    .back-nav {
+      margin-bottom: 24px;
+    }
+    .back-nav a {
+      color: #0969da;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .back-nav a:hover {
+      color: #0550ae;
+      transform: translateX(-3px);
+    }
+
+    /* Article Header */
+    header {
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0969da;
+      background: #ddf4ff;
+      border: 1px solid rgba(9, 105, 218, 0.25);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      line-height: 1.25;
+      font-weight: 800;
+      margin-bottom: 0.85rem;
+      color: #1f2328;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #57606a;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* Content Headings */
+    h2 {
+      font-size: 1.5rem;
+      color: #1f2328;
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid #d0d7de;
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      color: #0969da;
+      margin: 1.6rem 0 0.6rem;
+    }
+
+    h4 {
+      font-size: 1.05rem;
+      color: #1f2328;
+      margin: 1.2rem 0 0.4rem;
+    }
+
+    p {
+      margin-bottom: 1.2rem;
+      color: #24292f;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    strong {
+      color: #1f2328;
+    }
+
+    /* Cards & Callouts */
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 10px;
+      padding: 1.35rem;
+      margin: 1.35rem 0;
+      box-shadow: 0 1px 3px rgba(31, 35, 40, 0.04);
+    }
+
+    .callout {
+      border-left: 4px solid #0969da;
+      background: #f6f8fa;
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.35rem;
+      margin: 1.35rem 0;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #0969da;
+      margin-bottom: 0.35rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Pipeline Diagram Box */
+    .pipeline-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.8rem 0;
+      overflow-x: auto;
+    }
+
+    .pipeline-box pre {
+      margin: 0;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      color: #38bdf8;
+      line-height: 1.45;
+    }
+
+    /* Demo Media */
+    .figure-container {
+      margin: 1.75rem 0;
+      text-align: center;
+    }
+
+    .figure-container img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #d0d7de;
+      display: block;
+      margin: 0 auto;
+    }
+
+    figcaption {
+      font-size: 0.88rem;
+      color: #57606a;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* Code styling */
+    code {
+      background: rgba(175, 184, 193, 0.2);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 88%;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    .math-block {
+      background: #f6f8fa;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.95rem;
+      text-align: center;
+      color: #1f2328;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.35rem;
+      color: #24292f;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    /* =========================================
+       DARK MODE OVERRIDES (Matches style.css)
+       ========================================= */
+    @media (prefers-color-scheme: dark) {
+      .back-nav a {
+        color: #58a6ff;
+      }
+      .back-nav a:hover {
+        color: #79c0ff;
+      }
+      .badge {
+        background: #1f2937;
+        color: #58a6ff;
+        border-color: #388bfd;
+      }
+      h1, h2, h4, strong {
+        color: #e6edf3;
+      }
+      h2 {
+        border-bottom-color: #30363d;
+      }
+      h3 {
+        color: #58a6ff;
+      }
+      .subtitle, p, li, figcaption {
+        color: #cbd5e1;
+      }
+      .card {
+        background-color: #161b22;
+        border-color: #30363d;
+      }
+      .callout {
+        background: #161b22;
+        border-left-color: #58a6ff;
+      }
+      .callout-title {
+        color: #58a6ff;
+      }
+      .math-block {
+        background: #161b22;
+        border-color: #30363d;
+        color: #e6edf3;
+      }
+      .figure-container img {
+        border-color: #30363d;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACK LINK -->
+  <div class="back-nav">
+    <a href="../index.html">← Back to Portfolio</a>
+  </div>
+
+  <!-- HERO SECTION -->
+  <header>
+    <span class="badge">Computer Vision &bull; Real-Time Systems</span>
+    <h1>Real-Time Sign Language to Subtitles: Building a Low-Latency ASL Transcription Engine</h1>
+    <p class="subtitle">
+      Translating continuous American Sign Language into live closed-caption subtitles directly on laptop CPUs.
+    </p>
+  </header>
+
+  <!-- 1. WHAT IS THIS PROJECT ABOUT? -->
+  <section>
+    <h2>1. What Is This Project About?</h2>
+    <p>
+      Sign language is a complete, natural language with its own complex grammar, spatial syntax, and nuanced facial expressions. Yet, communication between Deaf signers and non-signers remains a persistent barrier, especially in daily interactions, meetings, and video calls.
+    </p>
+    <p>
+      The goal of this project is to build an <strong>end-to-end, real-time American Sign Language (ASL) recognition system</strong> that runs directly off a standard laptop webcam and translates continuous signing into live closed-caption subtitles.
+    </p>
+    <p>
+      Rather than relying on heavy, resource-intensive cloud GPUs or processing raw video frames through 3D Convolutional 
+      Neural Networks, the pipeline focuses on <strong>low-latency, privacy-first, on-device CPU execution</strong>, delivering end-to-end model inference.
+    </p>
+
+    <!-- LIVE DEMO EMBED -->
+    <figure class="figure-container">
+      <img src="../assets/asl-demo.gif" alt="Live ASL Sign Transcription Demo" width="650">
+      <figcaption><b>Figure 1:</b> Real-time ASL recognition in action, tracking skeletal keypoints and generating live subtitles.</figcaption>
+    </figure>
+
+    <!-- PIPELINE ARCHITECTURE FLOW -->
+    <div class="pipeline-box">
+      <pre>
+Live Webcam Video
+       │
+       ▼
+[MediaPipe Holistic] ──► Extracts Pose, Hands & Face Keypoints
+       │
+       ▼
+[Normalization & Velocity] ──► Shoulder-centered coordinates + (Δx, Δy)
+       │
+       ▼
+[Motion Energy Gating] ──► Distinguishes signing vs. resting hands
+       │
+       ▼
+[TCN Backbone + ONNX]
+       │
+       ▼
+[Metric Retrieval Gallery] ──► Rejects background motions / Out-of-Vocabulary (OOV) gestures
+       │
+       ▼
+[Debounced Subtitle HUD] ──► Clean, live sentence transcription on screen</pre>
+    </div>
+  </section>
+
+  <!-- 2. ARCHITECTURE -->
+  <section>
+    <h2>2. Architecture: What Models are Used and Why</h2>
+
+    <div class="callout">
+      <div class="callout-title">Why Landmarks Instead of Raw RGB Video?</div>
+      Feeding raw video pixels (e.g., 224 &times; 224 &times; 3 across 64 frames) into a deep video network requires gigabytes of VRAM and high compute, making real-time CPU execution nearly impossible. Furthermore, raw video models overfit easily to background clutter, lighting conditions, skin tones, and clothing.
+      <br><br>
+      By extracting <b>skeletal landmarks</b> (coordinates only), we:
+      <ol style="margin-top: 8px; margin-bottom: 0;">
+        <li>Reduce the per-frame input footprint from hundreds of thousands of RGB pixels to just a few dozen floating-point coordinates.</li>
+        <li>Inherently protect user privacy (no raw video frames need to be retained or transmitted).</li>
+        <li>Make the model invariant to lighting, and room background.</li>
+      </ol>
+    </div>
+
+    <h3>Step-by-Step Pipeline</h3>
+
+    <!-- Step 1 -->
+    <h4>1. MediaPipe Holistic Extraction</h4>
+      <p>
+        Google's MediaPipe Holistic is used to isolate the structural points critical to sign linguistics:
+      </p>
+      <ul>
+        <li><b>Upper-Body Pose (15 keypoints):</b> Nose position, shoulders, elbows, wrists, and hips.</li>
+        <li><b>Both Hands (42 keypoints):</b> All 21 3D joint positions for the left and right hands.</li>
+        <li><b>Expressive Face Mesh (34 keypoints):</b> Discards redundant 400+ static face points and isolates grammatical anchors, eyebrows (which denote questions and syntactic mood), lips, and eye contours.</li>
+      </ul>
+
+    <!-- Step 2 -->
+    <h4>2. Coordinate Normalization</h4>
+      <p>
+        Signers stand at varying distances from the webcam and shift around the frame. If left unadjusted, standing closer distorts joint coordinates.
+      </p>
+      <ul>
+        <li><b>Centering:</b> The coordinate origin (0, 0) is shifted to the midpoint between the left and right shoulders.</li>
+        <li><b>Scaling:</b> All distances are divided by the inter-shoulder distance.</li>
+      </ul>
+      <p><em>Result: A signer sitting 1 meter away looks identical to the model as a signer sitting 2 meters away.</em></p>
+
+    <!-- Step 3 -->
+    <h4>3. Dropping the MediaPipe Z-Coordinate</h4>
+      <p>
+        While MediaPipe provides (x, y, z) coordinates, normal laptop webcams have no real depth sensors (like LiDAR). Its estimated z-coordinate is an uncalibrated mathematical guess.
+      </p>
+      <ul>
+        <li>Through tests on the dataset, it was discovered that <b>keeping the noisy z-coordinate severely harmed model generalization</b> across unseen signers.</li>
+        <li>Stripping out z and operating strictly on calibrated 2D (x, y) planes produced an immediate, measurable jump in test accuracy.</li>
+      </ul>
+
+    <!-- Step 4 -->
+    <h4>4. Explicit Hand Visibility Flags</h4>
+      <p>
+        When a signer drops a hand out of view, its coordinate defaults to (0, 0). Because the origin is set to the mid-shoulder point, 
+        the model could easily confuse "hand absent" with "hand resting on the chest." Binary visibility flags are explicitly appended (<code>is_left_hand_present</code>, <code>is_right_hand_present</code>) to eliminate this ambiguity.
+      </p>
+
+    <h4>5. Velocity Appending (<code>append_velocity</code>)</h4>
+      <p>
+        Sign language is defined as much by <em>movement dynamics</em> as by static hand shape. Moving a flat hand upward versus downward carries completely different meanings.
+      </p>
+      <div class="math-block">
+        &Delta;x = x<sub>t</sub> - x<sub>t-1</sub>, &emsp; &Delta;y = y<sub>t</sub> - y<sub>t-1</sub>
+      </div>
+      <p>
+        Appending (&Delta;x, &Delta;y) to the static coordinate vector doubles dynamic signal fidelity, making trajectory and speed instantly accessible to the neural network.
+      </p>
+
+    <h4>6. Motion Energy Gating</h4>
+      <p>
+        One of the bugs in live video classification is <b>resting hand hallucination</b>: when sitting idle or fidgeting, a continuous model still forces a prediction on every frame, generating random nonsense words.
+      </p>
+      <div class="math-block">
+        Energy = (1 / 21) &Sigma;<sub>i=1..21</sub> ||hand<sub>t</sub>[i] - hand<sub>t-1</sub>[i]||
+      </div>
+      <p>
+        The gate requires at least 2 consecutive active frames above threshold to open, and 8 consecutive idle frames to close. Predictions are suppressed when the signer is at rest.
+      </p>
+
+    <h4>7. Temporal Convolutional Network (TCN) Backbone</h4>
+      <p>
+        Three sequence backbones were benchmarked: Transformers, Bidirectional LSTMs, and <b>TCNs (Temporal Convolutional Networks)</b>.
+      </p>
+      <ul>
+        <li><b>Why TCN won:</b> Using stacked 1D dilated convolutions with residual connections, TCN captures long-range temporal dependencies without recurrent bottleneck latency or quadratic self-attention memory overhead.</li>
+      </ul>
+
+    <h4>8. Supervised Contrastive Learning (SupCon) & Metric Retrieval</h4>
+      <p>
+        Instead of only using standard cross-entropy, the model is trained with a dual-loss objective including <b>Supervised Contrastive Loss (SupCon)</b>:
+      </p>
+      <ul>
+        <li>It actively pulls together embeddings of the same sign performed by different signers while pushing different signs apart in a metric sphere.</li>
+        <li>During inference, queries are compared against an enrolled <b>Sign Retrieval Gallery</b> using cosine similarity. If the similarity score is below 0.50, the system flags the gesture as an <b>Out-of-Vocabulary (OOV)</b> movement or ambient noise, rather than guessing blindly.</li>
+      </ul>
+
+    <h4>9. Live HUD & Debounced Subtitle Accumulator</h4>
+      <p>
+        The live Heads-Up Display (HUD) overlays skeleton tracking, an energy gauge, and candidate prediction bars. A debouncing state machine ensures a sign must be predicted with high confidence across consecutive windows before committing it to the subtitle sentence, preventing rapid word flicker.
+      </p>
+  </section>
+
+  <!-- 3. DATASET USED -->
+  <section>
+    <h2>3. Dataset Used</h2>
+    <p>
+      The core system is trained and evaluated on the <strong>WLASL (World-Level American Sign Language)</strong> benchmark:
+    </p>
+    <ul>
+      <li><b>Scale:</b> A diverse 100-gloss benchmark subset representing essential conversational vocabulary.</li>
+      <li><b>Ingestion:</b> Videos were scraped and aligned via <code>yt-dlp</code> from diverse public hosts and signer sources.</li>
+      <li><b>Fixed-Length Resampling:</b> Real-world sign clips vary in duration (20 to 100+ frames). Every video sequence is temporally resampled to a uniform <b>T = 64 frames</b>.</li>
+      <li><b>Data Augmentation:</b> To prevent overfitting on small video counts, the following techniques were applied:
+        <ul>
+          <li>Random 2D planar rotation and coordinate shear.</li>
+          <li>Gaussian noise jitter.</li>
+          <li>Temporal speed stretch and compression.</li>
+          <li><b>Mirroring:</b> Horizontal axis reflection that simultaneously swaps left- and right-hand coordinates and visibility channels, allowing the model to understand signs performed by left- or right-dominant signers.</li>
+        </ul>
+      </li>
+      <li><b>Signer-Independent (Disjoint) Splits:</b> Crucially, clips from the same person never appear in both train and test sets. The model is forced to recognize the sign itself, not the person signing it.</li>
+    </ul>
+  </section>
+
+  <!-- 4. TRAINING AND EVALUATION -->
+  <section>
+    <h2>4. How Training and Evaluation Are Done</h2>
+
+    <h3>The Training Pipeline</h3>
+    <ul>
+      <li><b>Optimizer & Scheduler:</b> AdamW with cosine learning rate decay and an initial warmup phase.</li>
+      <li><b>Regularization:</b> Label smoothing (0.1) to prevent overconfident output distributions, paired with high dropout (0.3) suited for small-data regimes.</li>
+      <li><b>Dual-Head Optimization:</b> The model jointly optimizes classification cross-entropy and contrastive metric alignment via an auxiliary <code>ProjectionHead</code>.</li>
+    </ul>
+
+    <h3>Comprehensive Evaluation Suite</h3>
+    <ol>
+      <li><b>Classification Accuracy:</b> Top-1 and Top-5 accuracy on unseen, signer-disjoint test sets.</li>
+      <li><b>Class Balance:</b> Macro F1 score to ensure rare signs are not eclipsed by frequent ones.</li>
+      <li><b>Worst-Pair Confusion Analysis:</b> Automatic extraction of sign pairs that the network confuses most frequently (e.g., differentiating signs with identical trajectories but distinct finger curls).</li>
+      <li><b>Metric Retrieval Diagnostics:</b> Recall@1, Recall@5, Mean Average Precision (mAP), and Mean Reciprocal Rank (MRR) against the enrolled gallery.</li>
+      <li><b>CPU Latency & ONNX Parity:</b> Automated test routines ensure exported ONNX weights match PyTorch CPU outputs within a numerical tolerance of &lt; 10<sup>-5</sup>.</li>
+    </ol>
+  </section>
+
+  <!-- 5. REAL-WORLD CHALLENGES -->
+  <section>
+    <h2>5. Real-World Challenges & Current Limitations</h2>
+    <p>
+      While the pipeline performs well in controlled tests, real-world deployment on everyday laptops reveals practical problems that are being addressed:
+    </p>
+
+    <h4>1. Registration Latency & Duplicate Subtitles</h4>
+    <p><b>The Symptom:</b> Sometimes a sign takes longer to register. The user pauses their hands waiting for the subtitle to show up, and the accumulator ends up printing the same word twice.</p>
+    <p><b>The Cause:</b> Heavy system workloads running in the background on a laptop reduce available CPU cycles. When frame rates drop or the rolling window lags, the debouncer's cooldown timer desynchronizes with the user's natural signing cadence.</p>
+  
+
+    <h4>2. Gesture & Movement Misclassification</h4>
+    <p><b>The Symptom:</b> The model occasionally mistakes one sign for another.</p>
+    <p><b>The Cause:</b> Certain sign pairs share almost identical body trajectories and only differ by subtle finger positions or micro-mouthing on the lips. If lighting is dim or the camera resolution is low, small finger joint nuances disappear, causing the classifier to confuse similar signs.</p>
+  
+
+    <h4>3. Boundary Misfires (Capturing Before You Actually Start)</h4>
+    <p><b>The Symptom:</b> The model tries to classify the transition movement while your hands are still rising into position.</p>
+    <p><b>The Cause:</b> The transition movement from your lap up to chest level generates high motion energy, occasionally triggering the motion gate a fraction of a second before the actual lexical sign begins.</p>
+
+
+    <h4>4. Tracking Drops & Lost Hands</h4>
+    <p><b>The Symptom:</b> Sudden flickering where skeletal tracking vanishes for a split second.</p>
+    <p><b>The Cause:</b> Rapid hand movements cause camera motion blur, and crossing hands in front of each other creates self-occlusions. When MediaPipe temporarily loses track of a hand, coordinates drop to zero, momentarily interrupting sequence consistency.</p>
+
+    </section>
+
+  <!-- CONCLUSION -->
+  <section>
+    <h2>Conclusion</h2>
+    <p>
+      By combining <strong>MediaPipe landmark extraction</strong>, <strong>coordinate & velocity engineering</strong>, 
+      <strong>Temporal Convolutional Networks</strong>, and <strong>contrastive metric retrieval</strong>, 
+      I built an ASL recognition system that runs locally on laptop CPUs.
+    </p>
+  </section>
+
+  <!-- BOTTOM BACK LINK -->
+  <div class="back-nav" style="margin-bottom: 3rem;">
+    <a href="../index.html">← Back to Portfolio</a>
+  </div>
+
+</body>
+</html>

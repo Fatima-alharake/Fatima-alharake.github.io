@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowGen: Teaching AI Fluid Dynamics & Uncertainty | Fatima Alharake</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Back Navigation Link */
+    .back-nav {
+      margin-bottom: 24px;
+    }
+    .back-nav a {
+      color: #0969da;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .back-nav a:hover {
+      color: #0550ae;
+      transform: translateX(-3px);
+    }
+
+    /* Article Header */
+    header {
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0969da;
+      background: #ddf4ff;
+      border: 1px solid rgba(9, 105, 218, 0.25);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      line-height: 1.25;
+      font-weight: 800;
+      margin-bottom: 0.85rem;
+      color: #1f2328;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #57606a;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* Content Headings */
+    h2 {
+      font-size: 1.5rem;
+      color: #1f2328;
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid #d0d7de;
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      color: #0969da;
+      margin: 1.6rem 0 0.6rem;
+    }
+
+    p {
+      margin-bottom: 1.2rem;
+      color: #24292f;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    strong {
+      color: #1f2328;
+    }
+
+    /* Cards & Callouts */
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 10px;
+      padding: 1.35rem;
+      margin: 1.35rem 0;
+      box-shadow: 0 1px 3px rgba(31, 35, 40, 0.04);
+    }
+
+    .analogy-box {
+      border-left: 4px solid #0969da;
+      background: #f6f8fa;
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.35rem;
+      margin: 1.35rem 0;
+    }
+
+    .analogy-title {
+      font-weight: 700;
+      color: #0969da;
+      margin-bottom: 0.35rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Diagrams Canvas */
+    .diagram-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.8rem 0;
+      text-align: center;
+    }
+
+    .diagram-caption {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 0.85rem;
+    }
+
+    /* Grid comparisons */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin: 1.35rem 0;
+    }
+
+    @media (min-width: 640px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .model-pill {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .pill-unet { background: #ddf4ff; color: #0969da; border: 1px solid rgba(9, 105, 218, 0.2); }
+    .pill-cvae { background: #fbefff; color: #8250df; border: 1px solid rgba(130, 80, 223, 0.2); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid #d0d7de;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.75rem 0.95rem;
+      border-bottom: 1px solid #d0d7de;
+    }
+
+    th {
+      color: #1f2328;
+      background: #f6f8fa;
+      font-weight: 600;
+    }
+
+    td {
+      background: #ffffff;
+      color: #24292f;
+    }
+
+    /* Lists */
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1.35rem;
+      color: #24292f;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    /* =========================================
+       DARK MODE OVERRIDES (Matches style.css)
+       ========================================= */
+    @media (prefers-color-scheme: dark) {
+      .back-nav a {
+        color: #58a6ff;
+      }
+      .back-nav a:hover {
+        color: #79c0ff;
+      }
+      .badge {
+        background: #1f2937;
+        color: #58a6ff;
+        border-color: #388bfd;
+      }
+      h1, h2, strong, th {
+        color: #e6edf3;
+      }
+      h2 {
+        border-bottom-color: #30363d;
+      }
+      h3 {
+        color: #58a6ff;
+      }
+      .subtitle, p, li, td {
+        color: #cbd5e1;
+      }
+      .card {
+        background-color: #161b22;
+        border-color: #30363d;
+      }
+      .analogy-box {
+        background: #161b22;
+        border-left-color: #58a6ff;
+      }
+      .analogy-title {
+        color: #58a6ff;
+      }
+      .table-container {
+        border-color: #30363d;
+      }
+      th {
+        background: #21262d;
+      }
+      td {
+        background: #161b22;
+        border-bottom-color: #30363d;
+      }
+      .pill-unet {
+        background: #1f2937;
+        color: #58a6ff;
+        border-color: #388bfd;
+      }
+      .pill-cvae {
+        background: #271033;
+        color: #d2a8ff;
+        border-color: #a371f7;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACK LINK -->
+  <div class="back-nav">
+    <a href="../index.html">← Back to Portfolio</a>
+  </div>
+
+  <!-- HERO SECTION -->
+  <header>
+    <span class="badge">Scientific Deep Learning &bull; Project Breakdown</span>
+    <h1>FlowSR : Generative High-Resolution for 2D Fluid Dynamics</h1>
+    <p class="subtitle">
+      A lightweight approach to recreating high-resolution water and air flows from coarse measurements, without violating the laws of physics.
+    </p>
+  </header>
+
+  <!-- INTRO -->
+  <section>
+    <h2>What Is This Project About?</h2>
+    <p>
+      Whether it’s wind curling around an aircraft wing, weather patterns drifting across continents, or water swirling in a river, 
+      simulating fluids on a computer is computationally expensive. Running hyper-detailed simulations can require days of supercomputer time.
+    </p>
+    <p>
+      <strong>FlowGen</strong> is a lightweight deep learning project designed to solve that bottleneck. It takes low-resolution, 
+      blurry 2D fluid data (the kind you get from cheap sensors or coarse, quick simulations) and sharpens it back into sharp, 
+      physically accurate high-resolution flows. It also tells you <em>how confident</em> it is in its own reconstruction.
+    </p>
+
+    <div class="analogy-box">
+      <div class="analogy-title">How to visualize a fluid "image"</div>
+      In a normal digital photo, every pixel contains three color numbers: <strong>(R, G, B)</strong>.<br />
+      In a fluid flow field, every pixel contains two motion numbers: <strong>(u, v)</strong>.
+      <ul>
+        <li><strong>u</strong> = How fast the fluid moves left or right.</li>
+        <li><strong>v</strong> = How fast the fluid moves up or down.</li>
+      </ul>
+      Instead of predicting colors, our AI predicts the exact velocity of water or air at every point in space.
+    </div>
+  </section>
+
+  <!-- THE CORE PROBLEM -->
+  <section>
+    <h2>Why Standard AI Image Upscaling Fails Here</h2>
+    <p>
+      The AI upscalers that are trained to make photos look good to a human eye are <strong>not</strong> trained to obey the laws of physics. 
+      They can hallucinate details that look plausible, but are physically impossible.
+    </p>
+    
+    <h3>1. Water is not pixels, it has strict laws</h3>
+    <p>
+      An image upscaler only cares if a picture <em>looks believable to a human eye</em>. But fluids have unbreakable physical rules. 
+      For instance, water is incompressible: if 1 liter of water flows into a tiny region, 1 liter must flow out. Standard AI models 
+      often generate arrows that all point inward toward the same spot, accidentally inventing "water-destroying black holes" on the grid. (water goes in, but nothing comes out.)
+    </p>
+
+    <h3>2. The "Ill-Posed" Swirl Dilemma</h3>
+    <p>
+      When high-speed fluid flows, it creates <strong>vortices and eddies</strong> (whirlpools and swirls). 
+      When you downsample a fluid field, all those fine, detailed vortices get squashed into a single blur. 
+      The issue is that there are <strong>many different ways</strong> to arrange tiny whirlpools that all produce the same blurry patch.
+      This is called an <strong>ill-posed inverse problem</strong>. One blurry fluid patch can match dozens of 
+      different, equally valid arrangements of tiny vortices.
+    </p>
+
+    <p>
+      If an AI is forced to output just <em>one</em> guess, it will compromise by averaging all the possibilities together. 
+      The result is a smoothed-out blur that destroys the turbulence. Hence, a model that can show us 
+      <strong>different plausible possibilities (realizations)</strong> is needed, so we can spot where the AI is certain and where it is guessing.
+    </p>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <h2>Models: U-Net vs. CVAE</h2>
+    <p>
+      To tackle this, two models are implemented and compared: a reliable deterministic baseline (<strong>U-Net</strong>) 
+      and a probabilistic generative model (<strong>CVAE</strong>).
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="model-pill pill-unet">Model 1</span>
+        <h3>Lightweight U-Net</h3>
+        <p><strong>The Deterministic Benchmark</strong></p>
+        <p>
+          U-Net is the gold standard for spatial-to-spatial problems. Its superpower is <strong>skip connections</strong>: bridges that 
+          pass exact coordinate positions directly from early layers to the output. This ensures physical boundaries stay sharp. 
+          It gives one reliable, single prediction.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="model-pill pill-cvae">Model 2</span>
+        <h3>Conditional VAE (CVAE)</h3>
+        <p><strong>The Generative Explorer</strong></p>
+        <p>
+          Instead of giving just one answer, the CVAE takes the blurry input <em>plus a random seed</em>. Based on the seed, 
+          it generates multiple plausible high-resolution flow fields. Where they all agree, the model is confident; where they diverge, 
+          the model flags high uncertainty.
+        </p>
+      </div>
+    </div>
+
+    <figure class="figure-container">
+    <img src="../assets/unet_arch.png" alt="U-Net Architecture" class="flowgen_modal-img" width="100%">
+    <figcaption>
+      <b>Figure 1:</b> U-Net Architecture with skip connections carrying exact coordinates across the network.
+    </figcaption>
+    </figure>
+
+    <figure class="figure-container">
+    <img src="../assets/CVAE_arch.png" alt="CVAE Architecture" class="flowgen_modal-img" width="100%">
+    <figcaption>
+      <b>Figure 2:</b> CVAE Architecture with probabilistic latent space for fluid generation.
+    </figcaption>
+    </figure>
+
+    <h3>Why not Diffusion Models or GANs?</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Architecture</th>
+            <th>Speed</th>
+            <th>Uncertainty Estimation?</th>
+            <th>Physical Reliability</th>
+            <th>The Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Diffusion</strong></td>
+            <td>Very Slow (20-1000 steps)</td>
+            <td>Yes</td>
+            <td>High</td>
+            <td>Too slow. If an AI takes minutes to denoise a frame, it defeats the purpose of speeding up CFD.</td>
+          </tr>
+          <tr>
+            <td><strong>GAN</strong></td>
+            <td>Fast (1 step)</td>
+            <td>No (Mode Collapse)</td>
+            <td>Poor (Hallucinates)</td>
+            <td>GANs love to invent fake, unphysical whirlpools just to trick the discriminator.</td>
+          </tr>
+          <tr>
+            <td><strong>CVAE (Chosen)</strong></td>
+            <td><strong>Instant (1 step)</strong></td>
+            <td><strong>Yes (Principled)</strong></td>
+            <td><strong>High</strong></td>
+            <td><strong>The sweet spot:</strong> Lightweight, instant single-step inference, with mathematically sound uncertainty.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- LOSSES -->
+  <section>
+    <h2>Teaching Physics to a Neural Network (Custom Losses)</h2>
+    <p>
+      If you train an AI using only standard pixel-matching loss, it learns to be lazy: it predicts smooth, stagnant water because 
+      smooth water minimizes average pixel error. Instead, custom penalties that enforce fluid physics were built:
+    </p>
+
+    <ul>
+      <li>
+        <strong>Reconstruction Loss (L1 / MSE):</strong><br />
+        Direct point-by-point numerical match against ground truth.
+      </li>
+      <li>
+        <strong>Divergence Loss:</strong><br />
+        <em>"Did it destroy or create fluid out of thin air?"</em> -> Checks incompressibility. Any fluid entering a cell must exit.
+      </li>
+      <li>
+        <strong>Vorticity Loss:</strong><br />
+        <em>"Are the whirlpools rotating with the right intensity?"</em> -> Forces the model to keep turbulent swirls spinning rather 
+        than flattening them into still water.
+      </li>
+      <li>
+        <strong>Spectral Loss:</strong><br />
+        <em>"Did it get both the big ocean waves and the tiny ripples right?"</em> -> Just like an audio equalizer separates deep bass 
+        from high treble, a 2D Fourier Transform (FFT) breaks the flow into spatial frequencies. This penalizes the AI if it only 
+        draws giant smooth waves while forgetting fine turbulent ripples.
+      </li>
+      <li>
+        <strong>Composite ELBO:</strong><br />
+        The master objective function that bundles the pixel accuracy, physical constraints, and the CVAE’s latent penalty into a single score.
+      </li>
+    </ul>
+  </section>
+
+  <!-- DATASETS -->
+  <section>
+    <h2>Datasets & Degradation Sandbox</h2>
+    <ul>
+      <li>
+        <strong>PDEBench (<code>pdebench.py</code>):</strong> Standard scientific benchmarks containing pre-computed Navier-Stokes fluid simulations stored in HDF5 format.
+      </li>
+      <li>
+        <strong>Synthetic Turbulence Generator (<code>synthetic.py</code>):</strong> Because real CFD simulations can take tens of gigabytes, 
+        a standalone generator is written that synthesizes realistic 2D turbulent flows on the fly using Fourier streamfunctions.
+      </li>
+      <li>
+        <strong>Degradation Model (<code>degradation.py</code>):</strong> To teach the AI how to restore blurry data, high-resolution frames are artificially 
+        degraded (downsampling by 4 times, average pooling, or injecting sensor noise) to create before-and-after training pairs.
+      </li>
+    </ul>
+  </section>
+
+  <!-- EVALUATION -->
+  <section>
+    <h2>How The AI is Evaluated</h2>
+
+    <h3>1. Computer Vision Scores</h3>
+      <p>
+        <strong>RMSE &amp; MAE</strong> measure average numerical speed errors. 
+        <strong>PSNR &amp; SSIM</strong> check visual fidelity and structural sharpness.
+      </p>
+
+      <h3>2. Fluid Physics Scores</h3>
+      <p>
+        <strong>Divergence RMS</strong> tests if mass was conserved (the closer to zero, the better).<br />
+        <strong>Enstrophy Relative Error</strong> confirms whether the total rotational energy across the entire fluid field was preserved.<br />
+        <strong>Kinetic Energy Spectrum Error</strong> verifies that turbulent energy cascades naturally from big eddies down to tiny ripples.
+      </p>
+
+      <h3>3. Uncertainty Reliability (Calibration)</h3>
+      <p>
+        <strong>PICP (Coverage):</strong> If the model claims <em>"I am 95% confident the fluid velocity here is between 2.0 and 3.5 m/s"</em>, 
+        does the true speed actually fall inside that range 95% of the time?<br />
+        <strong>Error-Spread Correlation:</strong> When the model gives a wide spread (high uncertainty), is the error actually higher there? 
+        A good model should only be uncertain where it is genuinely likely to make a mistake.
+      </p>
+  </section>
+
+    <!-- ENGINEERING CHALLENGES -->
+  <section>
+    <h2>Problems Faced & How They were Solved</h2>
+    <p>
+      Building deep learning models for fluid dynamics sounds straightforward in theory, but in practice, standard computer vision assumptions break down quickly. Here are the main engineering roadblocks that came up during development:
+    </p>
+
+    <!-- CHALLENGE 1 -->
+    <h3>1. Dimension MisMatch in Scientific HDF5 Files</h3>
+      <p>
+        In machine learning, we usually expect neat <code>(Batch, Channels, Height, Width)</code> image folders. 
+        In scientific computing, simulation datasets come from different CFD solvers dumped into massive HDF5 binary files, some structured as 5D tensors <code>(t, x, y, z, c)</code>, others as 4D or 3D slices with arbitrary axis ordering.
+      </p>
+      <p>
+        <b>The Fix:</b> An automated inspection pipeline in <code>pdebench.py</code> was built that auto-detects tensor dimensionality, dynamically maps and transposes spatial axes into standard PyTorch format on the fly, and applies channel-wise normalization without destroying the relative physical scale between u and v.
+      </p>
+
+    <!-- CHALLENGE 2 -->
+    <h3>2. Prototyping Without 50GB Benchmark Downloads</h3>
+      <p>
+        Full Navier-Stokes benchmark runs (like PDEBench) take up tens of gigabytes and require high-bandwidth connections, making fast local testing, continuous integration, and debugging hard on a local machine.
+      </p>
+      <p>
+        <b>The Fix:</b> <code>synthetic.py</code>, a lightweight procedural turbulence generator, synthesizes realistic 
+        2D incompressible velocity fields on the fly using randomized Fourier streamfunctions. This allows writing unit tests, verifying custom loss gradients, 
+        and debuging architectures locally in seconds before training on heavy datasets.
+      </p>
+
+    <!-- CHALLENGE 3 -->
+    <h3>3. "Loss Term Warfare" (Balancing 5 Conflicting Objectives)</h3>
+      <p>
+        Standard vision models optimize one objective (like L_1 or Cross-Entropy). Here, the network has five distinct loss terms simultaneously:
+      </p>
+      <ul>
+        <li><b>Pixel error (L_1):</b> Point-to-point numerical match.</li>
+        <li><b>Latent penalty (KL divergence):</b> Regularizing the CVAE distribution.</li>
+        <li><b>Divergence loss:</b> Enforcing conservation of mass.</li>
+        <li><b>Vorticity loss:</b> Preserving swirl energy.</li>
+        <li><b>Spectral loss:</b> Matching Fourier frequency cascades.</li>
+      </ul>
+      <p>
+        <b>The Problem:</b> These loss terms constantly conflict with each other. For example, if you weight the divergence penalty too aggressively, the model quickly figures out a "cheat": predicting zero velocity everywhere. Water standing completely still has perfect zero divergence, but ruins the actual flow prediction.
+      </p>
+      <p>
+        <b>The Fix:</b> A composite ELBO with careful loss weighting multipliers and a dynamic warm-up schedule is used-prioritizing base pixel reconstruction early in training, and gradually phasing in the physical divergence and enstrophy penalties to guide vectors into physically valid states.
+      </p>
+
+    <!-- CHALLENGE 4 -->
+    <h3>4. Small Eddies Getting Swallowed by the Bulk Flow</h3>
+      <p>
+        <b>The Problem:</b> In fluid mechanics, up to 95% of the total velocity magnitude often comes from large, smooth, bulk flow (e.g., an entire river moving eastward at 5.0 m/s). The chaotic, turbulent eddies we actually care about are tiny local fluctuations of only 0.1 m/s.
+      </p>
+      <p>
+        When a standard network trains, it allocates nearly all of its capacity to fitting the massive 5.0 m/s bulk stream, leaving the subtle turbulent eddies smoothed over.
+      </p>
+      <p>
+        <b>The Fix: Residual Formulation.</b> Instead of asking the neural network to synthesize the entire flow field from scratch, we first upsample the low-resolution input via bicubic interpolation (<code>x_lr_up</code>). Then the network is constrained to predict <em>only the residual difference</em>:
+      </p>
+      <p style="background: rgba(56, 189, 248, 0.08); padding: 8px 12px; border-radius: 6px; font-family: monospace;">
+        output = x_lr_up + model(x_lr)
+      </p>
+      <p>
+        This shifts the bulk flow baseline out of the equation, freeing 100% of the model's parameters to concentrate exclusively on resolving fine-grained turbulent eddies.
+      </p>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section>
+    <h2>Key Takeaway</h2>
+    <p>
+      By combining the fast geometry-preserving power of a <strong>U-Net</strong> with the multi-sample uncertainty of a 
+      <strong>CVAE</strong>, and grounding both with strict <strong>physics-informed losses</strong>. FlowGen demonstrates that AI 
+      can upscale complex turbulent fluids accurately, instantly, and reliably, while openly showing its work when it isn’t sure.
+    </p>
+  </section>
+
+  <hr style="margin-top: 3rem; margin-bottom: 2rem;">
+
+  <!-- BOTTOM BACK LINK -->
+  <div class="back-nav" style="margin-bottom: 3rem;">
+    <a href="../index.html">← Back to Portfolio</a>
+  </div>
+
+</body>
+</html>
